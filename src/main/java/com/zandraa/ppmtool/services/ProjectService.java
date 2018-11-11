@@ -1,6 +1,7 @@
 package com.zandraa.ppmtool.services;
 
 import com.zandraa.ppmtool.domain.Project;
+import com.zandraa.ppmtool.exceptions.ProjectIdException;
 import com.zandraa.ppmtool.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,11 @@ public class ProjectService {
     }
 
     public Project savveOrUpdate(Project project) {
-        return projectRepository.save(project);
+        try {
+            project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
+            return projectRepository.save(project);
+        } catch (Exception e) {
+            throw new ProjectIdException("Project ID '" + project.getProjectIdentifier() + "' already exists");
+        }
     }
 }
